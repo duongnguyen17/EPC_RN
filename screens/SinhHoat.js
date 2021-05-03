@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {
   Pressable,
   SafeAreaView,
@@ -14,60 +14,58 @@ import {ScreenWidth, ScreenHeight, Price} from '../constants/index';
 import Column from '../components/Column';
 export default function SinhHoat(props) {
   const [input, setInput] = useState('0');
-  //let money = useRef(new Array(9).fill(0)).current;
-  const [pay, setPay] = useState(new Array(9).fill(0));
-  const [quantity, setQuantity] = useState(new Array(6).fill(0));
+  let pay = useRef(new Array(9).fill(0)).current;
+  let quantity = useRef(new Array(6).fill(0)).current;
+  const [reload, setReload] = useState(false);
 
   const caculate = num => {
     calQuantity(num);
-    calPay()
+    calPay();
+    setReload(!reload);
   };
-  const calQuantity = (num) => {
-    let quantityTemp = new Array(6).fill(0);
+  const calQuantity = num => {
     if (num >= 0 && num <= 50) {
-      quantityTemp[0] = num;
+      quantity[0] = num;
     } else if (num >= 51 && num <= 100) {
-      quantityTemp[0] = 50;
-      quantityTemp[1] = num - 50;
+      quantity[0] = 50;
+      quantity[1] = num - 50;
     } else if (num >= 101 && num <= 200) {
-      quantityTemp[0] = 50;
-      quantityTemp[1] = 50;
-      quantityTemp[2] = num - 100;
+      quantity[0] = 50;
+      quantity[1] = 50;
+      quantity[2] = num - 100;
     } else if (num >= 201 && num <= 300) {
-      quantityTemp[0] = 50;
-      quantityTemp[1] = 50;
-      quantityTemp[2] = 100;
-      quantityTemp[3] = num - 200;
+      quantity[0] = 50;
+      quantity[1] = 50;
+      quantity[2] = 100;
+      quantity[3] = num - 200;
     } else if (num >= 301 && num <= 400) {
-      quantityTemp[0] = 50;
-      quantityTemp[1] = 50;
-      quantityTemp[2] = 100;
-      quantityTemp[3] = 100;
-      quantityTemp[4] = num - 300;
+      quantity[0] = 50;
+      quantity[1] = 50;
+      quantity[2] = 100;
+      quantity[3] = 100;
+      quantity[4] = num - 300;
     } else if (num >= 401) {
-      quantityTemp[0] = 50;
-      quantityTemp[1] = 50;
-      quantityTemp[2] = 100;
-      quantityTemp[3] = 100;
-      quantityTemp[4] = 100;
-      quantityTemp[5] = num - 400;
+      quantity[0] = 50;
+      quantity[1] = 50;
+      quantity[2] = 100;
+      quantity[3] = 100;
+      quantity[4] = 100;
+      quantity[5] = num - 400;
     } else {
       console.log('Input is incorrect');
     }
-    setQuantity(quantityTemp);
   };
 
   const calPay = () => {
-    let payTemp = new Array(9).fill(0);
+    pay[6] = 0;
     for (let i = 0; i < 6; ++i) {
-      payTemp[i] = quantity[i] * Price[i];
+      pay[i] = quantity[i] * Price[i];
     }
     for (let i = 0; i < 6; ++i) {
-      payTemp[6] += payTemp[i];
+      pay[6] += pay[i];
     }
-    payTemp[7] = payTemp[6] / 10;
-    payTemp[8] = payTemp[6] + payTemp[7];
-    setPay(payTemp);
+    pay[7] = pay[6] / 10;
+    pay[8] = pay[6] + pay[7];
   };
 
   return (
@@ -169,16 +167,16 @@ const styles = StyleSheet.create({
     height: ScreenHeight / 15,
   },
   tableContainer: {
-    height:500,
+    height: 500,
     flexDirection: 'row',
     backgroundColor: '#fff',
     marginHorizontal: 10,
   },
-  table:{
-    flex:1,
+  table: {
+    flex: 1,
     flexDirection: 'row',
     marginHorizontal: 10,
-    marginVertical:20
+    marginVertical: 20,
   },
   col: {
     flexDirection: 'column',
